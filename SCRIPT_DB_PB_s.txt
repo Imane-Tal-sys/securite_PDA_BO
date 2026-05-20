@@ -1,0 +1,130 @@
+USE [PDA_DB_PB]
+GO
+
+/* ----------------------------------------------------------------------
+   1. Cree les Schemas (ila makanch deja)
+   ---------------------------------------------------------------------- */
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Habilitation') BEGIN EXEC('CREATE SCHEMA [Habilitation]') END
+GO
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'OPERATION') BEGIN EXEC('CREATE SCHEMA [OPERATION]') END
+GO
+
+/* ----------------------------------------------------------------------
+   2. Table: [Habilitation].[Utilisateur]
+   ---------------------------------------------------------------------- */
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [Habilitation].[Utilisateur](
+	[UtilisateurId] [int] IDENTITY(1,1) NOT NULL,
+	[Matricule] [nvarchar](50) NOT NULL,
+	[Nom] [nvarchar](500) NULL,
+	[Prenom] [nvarchar](500) NULL,
+	[CIN] [nvarchar](100) NOT NULL,
+	[DateNaissance] [date] NULL,
+	[Email] [nvarchar](100) NULL,
+	[Etablissement] [nvarchar](50) NULL,
+	[Etat] [bit] NOT NULL,
+	[Fonction] [nvarchar](50) NULL,
+	[Organisation] [nvarchar](50) NULL,
+	[Photo] [image] NULL,
+	[GenreId] [int] NULL,
+	[Societe] [nvarchar](100) NULL,
+	[Telephone] [nvarchar](100) NULL,
+	[VilleAffectationId] [int] NULL,
+	[StatutUtilisateurId] [int] NOT NULL,
+	[Motif] [nvarchar](200) NULL,
+	[Adresse] [nvarchar](500) NULL,
+	[DateConnection] [date] NULL,
+	[DateCreation] [datetime] NULL,
+	[DateModification] [datetime] NULL,
+	[Password] [nvarchar](200) NOT NULL,
+	[IsFirstConnexion] [bit] NOT NULL,
+	[DateModificationPassword] [datetime] NULL,
+	[CreatedDate] [datetime] NOT NULL DEFAULT (getdate()),
+	[LastModifiedDate] [datetime] NOT NULL DEFAULT (getdate()),
+	[EntiteId] [int] NOT NULL DEFAULT ((3)),
+	[Genre] [varchar](50) NULL,
+	[CodeVille] [varchar](50) NULL,
+	[RoleId] [int] NULL,
+	[Equipe] [varchar](100) NULL,
+	[ConnectionAttemptsNumber] [int] NULL,
+	[LastConnectionAttemptDate] [datetime] NULL,
+ CONSTRAINT [PK_Utilisateur] PRIMARY KEY CLUSTERED ([UtilisateurId] ASC),
+ CONSTRAINT [UQ_Matricule] UNIQUE NONCLUSTERED ([Matricule] ASC)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+/* ----------------------------------------------------------------------
+   3. Table: [Habilitation].[DeviceUtilisateur]
+   ---------------------------------------------------------------------- */
+CREATE TABLE [Habilitation].[DeviceUtilisateur](
+	[MatriculeUtilisateur] [nvarchar](50) NOT NULL,
+	[DeviceId] [nvarchar](100) NOT NULL,
+	[CreatedDate] [datetime] NOT NULL DEFAULT (getdate()),
+	[LastModifiedDate] [datetime] NOT NULL DEFAULT (getdate()),
+ CONSTRAINT [UQ_MatriculeUtilisateur] UNIQUE NONCLUSTERED ([MatriculeUtilisateur] ASC)
+) ON [PRIMARY]
+GO
+
+/* ----------------------------------------------------------------------
+   4. Table: [OPERATION].[Controle]
+   ---------------------------------------------------------------------- */
+CREATE TABLE [OPERATION].[Controle](
+	[ControleId] [int] IDENTITY(1,1) NOT NULL,
+	[MissionId] [int] NOT NULL,
+	[NumeroBillet] [nvarchar](50) NULL,
+	[GareDepartId] [int] NULL,
+	[GareArriveeId] [int] NULL,
+	[GammeId] [int] NULL,
+	[NiveauConfortId] [int] NULL,
+	[Tarif] [nvarchar](50) NULL,
+	[MessageControle] [nvarchar](255) NULL,
+	[ResultatControle] [nvarchar](2) NULL,
+	[DateHeureControle] [datetime] NULL,
+	[TypeControle] [nvarchar](2) NULL,
+	[Code2DControle] [nvarchar](1024) NULL,
+	[CreatedDate] [datetime] NOT NULL DEFAULT (getdate()),
+	[LastModifiedDate] [datetime] NOT NULL DEFAULT (getdate()),
+	[GareControleId] [int] NULL,
+	[CodeDossier] [nvarchar](6) NULL,
+	[ProfilDemographiqueId] [int] NULL,
+ PRIMARY KEY CLUSTERED ([ControleId] ASC)
+) ON [PRIMARY]
+GO
+
+/* ----------------------------------------------------------------------
+   5. Table: [OPERATION].[VenteBillet]
+   ---------------------------------------------------------------------- */
+CREATE TABLE [OPERATION].[VenteBillet](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[NumeroBillet] [varchar](50) NULL,
+	[DateOperation] [datetime] NOT NULL,
+	[Montant] [decimal](18, 0) NOT NULL,
+	[NombreVoyageurs] [int] NOT NULL,
+	[NiveauConfortId] [int] NOT NULL,
+	[LiaisonId] [int] NOT NULL,
+	[NiveauPrixId] [int] NOT NULL,
+	[TitreReduction] [varchar](50) NOT NULL,
+	[MissionId] [int] NOT NULL,
+	[Motif] [varchar](100) NOT NULL,
+	[NumeroMotif] [varchar](50) NOT NULL,
+	[BaremeId] [int] NOT NULL,
+	[BilletUuid] [varchar](100) NULL,
+	[DossierVoyageSIV] [int] NULL,
+	[CodeDossierVoyage] [varchar](10) NULL,
+	[StatutSynchronisationSIV] [int] NULL,
+	[GammeId] [int] NULL,
+	[IsCancelled] [bit] NULL,
+	[NumeroPlace] [int] NULL,
+	[NumeroVoiture] [int] NULL,
+	[StatutOperationPDA] [int] NULL,
+	[ConfigurationPlaceId] [int] NULL,
+	[NumeroTransaction] [varchar](100) NULL,
+	[CreatedDate] [datetime] NULL DEFAULT (getdate()),
+	[LastModifiedDate] [datetime] NULL DEFAULT (getdate()),
+ CONSTRAINT [PK_VenteBillet] PRIMARY KEY CLUSTERED ([Id] ASC)
+) ON [PRIMARY]
+GO
+
